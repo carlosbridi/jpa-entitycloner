@@ -3,7 +3,6 @@ package org.lindberg.jpa.entitycloner.persistence;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -40,7 +38,12 @@ public class EntityCloner<E> {
 	 */
 	private E entity;
 	
-	private HashMap<Class, List<String>> fieldsToIgnore;
+	private HashMap<Class, List<String>> fieldsToIgnore = null;
+	
+	public EntityCloner(E entity) {
+		this.entity = entity;
+	}
+	
 	
 	/**
 	 * Create a EntityCloner.
@@ -73,7 +76,9 @@ public class EntityCloner<E> {
 
         for (Field entityField : fields) {
         	 
-        	if (this.ignoreField(entity.getClass().getName(), entityField.getName()))
+        	if ((Optional.ofNullable(this.fieldsToIgnore).isPresent()) 
+        			&& (!this.fieldsToIgnore.isEmpty()) 
+        			&& this.ignoreField(entity.getClass().getName(), entityField.getName()))
              	continue;
              
 

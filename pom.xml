@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jpaclonerobject</groupId>
   <artifactId>jpa-entitycloner</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>JPA Entity Cloner</name>
   
   <developers>
@@ -21,7 +21,27 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    
+    <maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+
+	<distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+	<scm>
+        <connection>scm:git:git://github.com/nyholmniklas/arithmetic.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nyholmniklas/arithmetic.git</developerConnection>
+        <url>http://github.com/nyholmniklas/arithmetic</url>
+    </scm>
 
   <dependencies>
     <dependency>
@@ -38,6 +58,13 @@
   </dependencies>
 
   <build>
+  <extensions>
+  	<extension>
+  		<groupId>org.apache.maven.wagon</groupId>
+  		<artifactId>wagon-ftp</artifactId>
+  		<version>3.1.0</version>
+  	</extension>
+  </extensions>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -48,6 +75,7 @@
         </configuration>
       </plugin>
     </plugins>
+    
   </build>
 
   <profiles>
@@ -56,7 +84,7 @@
       <distributionManagement>
         <site>
           <id>maven-repository-doc</id>
-          <url>org.lindberg.jpa-entitycloner</url>
+          <url>org.jpaclonerobject.jpa-entitycloner</url>
         </site>
       </distributionManagement>
     </profile>
@@ -81,17 +109,6 @@
       <url>http://download.java.net/maven/2</url>
     </repository>
   </repositories>
-
-  <distributionManagement>
-    <repository>
-      <id>releases</id>
-      <url>http://smile-sa.github.com/maven-repository/releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>snapshots</id>
-      <url>http://smile-sa.github.com/maven-repository/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   
   
 </project>
