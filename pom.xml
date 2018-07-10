@@ -11,13 +11,12 @@
       <name>Victor Lindberg</name>
       <email>victorlindberg713@gmail.com</email>
     </developer>
+    <developer>
+      <id>bridi</id>
+      <name>Carlos Bridi</name>
+      <email>carlosbridi@gmail.com</email>
+    </developer>
   </developers>
-
-  <scm>
-    <connection>scm:git:git@github.com:vlindberg/jpa-entitycloner.git</connection>
-    <url>scm:git:git@github.com:vlindberg/jpa-entitycloner.git</url>
-    <developerConnection>scm:git:git@github.com:vlindberg/jpa-entitycloner.git</developerConnection>
-  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

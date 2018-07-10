@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -38,12 +40,15 @@ public class EntityCloner<E> {
 	 */
 	private E entity;
 	
+	private HashMap<Class, List<String>> fieldsToIgnore;
+	
 	/**
 	 * Create a EntityCloner.
 	 * @param entity original entity to clone.
 	 */
-	public EntityCloner(E entity) {
+	public EntityCloner(E entity, HashMap<Class, List<String>> fieldsToIgnore) {
 		this.entity = entity;
+		this.fieldsToIgnore = fieldsToIgnore;
 	}
 	
 	/**
@@ -55,15 +60,6 @@ public class EntityCloner<E> {
         return  (E) generateCopyToPersist(entity, new HashMap<Object, Object>());
     }
 	
-	/**
-     * Gera uma copia da entidade persistente pronta para para a inclusão.
-     * 
-     * @param entity entitade persistente a ser copiada.
-     * @param entityCache cache das entidades que já foram copiados de modo que quando algum bean for passado para ser
-     *            copiado antes da copia for feita o cache é verificado para ver se o bean ja foi copiado e
-     *            assim essa instancia de copia ser usada ao invés de fazer novamente a copia.
-     * @return copia da entidade pronta para para a inclusão.
-     */
 	protected Object generateCopyToPersist(Object entity,
         Map<Object, Object> entityCache) {
     	Object cacheCopy = entityCache.get(entity);
@@ -76,11 +72,10 @@ public class EntityCloner<E> {
         Field[] fields = ReflectionUtil.getFields(entity, true, true);
 
         for (Field entityField : fields) {
-            int modifiers = entityField.getModifiers();
-            IgnoreClone noPersistenceCopyAnnot = entityField.getAnnotation(IgnoreClone.class);
-            if (! entityField.isAnnotationPresent(ForceClone.class) && entityField.isAnnotationPresent(Id.class) || Modifier.isFinal(modifiers) ||
-            	(noPersistenceCopyAnnot != null && noPersistenceCopyAnnot.setNull()))
-                continue;
+        	 
+        	if (this.ignoreField(entity.getClass().getName(), entityField.getName()))
+             	continue;
+             
 
             try {
                 ReflectionUtil.makeAttributesAccessible(entityField);
@@ -109,6 +104,23 @@ public class EntityCloner<E> {
 
         return entityCopy;
     }
+	
+	protected boolean ignoreField(String className, String fieldName) {
+			
+			Map<Class, List<String>> collect = fieldsToIgnore.entrySet().stream()
+					.filter(x -> x.getKey().getName().equals(className))
+					.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+			
+			if (!collect.isEmpty()) {
+				Map.Entry<Class, List<String>> entry = collect.entrySet().iterator().next();
+				List<String> lista = entry.getValue();
+				Optional optField = lista.stream().filter(campo -> campo.equals(fieldName)).findFirst();
+				return optField.isPresent();
+			} else {
+				return false;
+			}
+		}
+	    
     
     /**
      * Gera uma copia da coleção de entidades pronta para inclusão.
