@@ -2,12 +2,15 @@ package org.lindberg.jpa.entitycloner.util;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.ConstructorUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for reflection operations. 
@@ -16,6 +19,8 @@ import org.apache.commons.lang.reflect.ConstructorUtils;
  *
  */
 public class ReflectionUtil {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtil.class);
 	
 	public static void setValueByField(Field field, Object target, Object value){
 		Method setterMethod = null;
@@ -42,11 +47,12 @@ public class ReflectionUtil {
 	}
 	
 	
-	public static Method getSetterMethod(Object target,String methodOrPropertyName,Class paramClassSet,boolean findInSuperClasses){
+	public static Method getSetterMethod(Object target,String methodOrPropertyName,@SuppressWarnings("rawtypes") Class paramClassSet,boolean findInSuperClasses){
 		return getSetterMethod(target.getClass(), methodOrPropertyName, paramClassSet,findInSuperClasses);
 	}
 	
-	public static Method getSetterMethod(Class clazz,String methodOrPropertyName,Class paramClassSet,boolean findInSuperClasses){
+	@SuppressWarnings("unchecked")
+	public static Method getSetterMethod(@SuppressWarnings("rawtypes") Class clazz,String methodOrPropertyName,@SuppressWarnings("rawtypes") Class paramClassSet,boolean findInSuperClasses){
 		methodOrPropertyName = getSetterMethodName(methodOrPropertyName);
 		
 		try {
@@ -84,7 +90,7 @@ public class ReflectionUtil {
      * @param findInSuperClasses true whether to load the inherited fields and false otherwise.
      * @param setFieldsAsAccessible true if the fields should be setted as accessible.
      */
-    public static void loadFields(Class clazz, List<Field> fieldList, boolean findInSuperClasses,
+    public static void loadFields(@SuppressWarnings("rawtypes") Class clazz, List<Field> fieldList, boolean findInSuperClasses,
         boolean setFieldsAsAccessible) {
         if (clazz.equals(Object.class))
             return;
@@ -123,13 +129,23 @@ public class ReflectionUtil {
 	 * @param clazz bean class.
 	 * @param args contructor arguments.
 	 * @return bean instance.
+	 * @throws EntityClonerException 
 	 */
+	@SuppressWarnings("unchecked")
 	public static <E> E createInstance(Class<E> clazz,Object... args){
-		try{
+		try {
 			return (E) ConstructorUtils.invokeConstructor(clazz, args);
-		}catch(Exception ex){
-			throw new RuntimeException(ex);
+		} catch (NoSuchMethodException e) {
+			LOGGER.error("Construtor público não implementado para a classe: " + clazz.getName());
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 	
 }

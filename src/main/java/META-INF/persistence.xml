@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="jpa-entitycloner">
+		<class>org.lindberg.jpa.entitycloner.test.model.Produto.Produto</class>
+		<class>org.lindberg.jpa.entitycloner.test.model.Cliente.Cliente</class>
+		<class>org.lindberg.jpa.entitycloner.test.model.Pedido.Pedido</class>
+		<class>org.lindberg.jpa.entitycloner.test.model.Pedido.ItemPedido</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver"
+				value="org.h2.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:h2:mem:test" />
+			<property name="javax.persistence.jdbc.user" value="sa" />
+			<property name="javax.persistence.jdbc.password" value="" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="auto" />
+			<property name="show_sql" value="true" />
+			<property name="hibernate.temp.use_jdbc_metadata_defaults"
+				value="false" />
+
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+			<property name="hibernate.jdbc.wrap_result_sets"
+				value="false" />
+			<property name="hibernate.hibernate.cache.use_query_cache"
+				value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+		</properties>
+	</persistence-unit>
+</persistence>
